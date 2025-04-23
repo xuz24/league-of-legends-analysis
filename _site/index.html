@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>League of Legends FF at 15? | League Of Legends Analysis</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="League of Legends FF at 15?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="EECS 398 Final Project" />
+<meta property="og:description" content="EECS 398 Final Project" />
+<link rel="canonical" href="http://localhost:4000/" />
+<meta property="og:url" content="http://localhost:4000/" />
+<meta property="og:site_name" content="League Of Legends Analysis" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="League of Legends FF at 15?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"EECS 398 Final Project","headline":"League of Legends FF at 15?","name":"League Of Legends Analysis","url":"http://localhost:4000/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/assets/css/style.css?v=13103e754e632f3b794cdb3ba7f147b48a9fb41a">
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <a id="skip-to-content" href="#content">Skip to the content.</a>
+
+    <header class="page-header" role="banner">
+      <h1 class="project-name">League of Legends FF at 15?</h1>
+      <h2 class="project-tagline">EECS 398 Final Project</h2>
+      
+        <a href="https://github.com/xuz24/league-of-legends-analysis" class="btn">View on GitHub</a>
+      
+      
+    </header>
+
+    <main id="content" class="main-content" role="main">
+      <h1 id="league-of-legends-ff-at-15">League of Legends FF at 15?</h1>
+<h2 id="introduction">Introduction</h2>
+<p>League of Legends is a team-based strategy game where two teams of five powerful champions face off to destroy the other’s base. Choose from over 140 champions to make epic plays, secure kills, and take down towers as you battle your way to victory. <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></p>
+
+<p>In League of Legends, each match features two teams—one on the blue side and one on the red side—each composed of five unique champions filling 5 unique roles. The objective is to destroy the enemy team’s Nexus before they destroy yours.</p>
+
+<p>The game map consists of three main lanes (top, mid, and bot) connected by jungle areas filled with neutral monsters. Each lane is protected by three layers of turrets (towers) that must be destroyed in sequence to reach the opposing base.</p>
+
+<p>During the early game—typically the first 15 minutes—teams compete for key objectives that can provide a significant advantage. These include securing dragons that grant team-wide buffs, Void Grubs that assist in destroying towers, and First Blood and First Tower, which awards bonus gold to the first player to score a kill and the first team that takes down a turret. Winning these early skirmishes can set the pace for the rest of the match.</p>
+
+<p>In this project, I will be looking at in-game statistics during the first 15 minutes of a game to determine if a team should FF (surrender) the game.<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup></p>
+
+<p>The dataset I will be working with is from Oracle’s Elixir’s 2024 match data which contains thousands of pro-play matches and their statistics. The dataset has <code class="language-plaintext highlighter-rouge">117648</code> rows and <code class="language-plaintext highlighter-rouge">161</code> columns. Each match has <code class="language-plaintext highlighter-rouge">12</code> rows in the csv, one row for each player on each team and one row for each team.</p>
+
+<dl>
+  <dt>The relevant columns are:</dt>
+  <dt><code class="language-plaintext highlighter-rouge">result</code></dt>
+  <dd>The result of the game. <code class="language-plaintext highlighter-rouge">0</code> for a loss, <code class="language-plaintext highlighter-rouge">1</code> for a win.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">side</code></dt>
+  <dd>Which side the team is on. <code class="language-plaintext highlighter-rouge">Red</code> or <code class="language-plaintext highlighter-rouge">Blue</code>.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">firstblood</code></dt>
+  <dd>If a team gets the first kill. <code class="language-plaintext highlighter-rouge">0</code> for false, <code class="language-plaintext highlighter-rouge">1</code> for true.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">firstdragon</code></dt>
+  <dd>If a team kills the first dragon. <code class="language-plaintext highlighter-rouge">0</code> for false, <code class="language-plaintext highlighter-rouge">1</code> for true.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">firsttower</code></dt>
+  <dd>If a team kills the first tower. <code class="language-plaintext highlighter-rouge">0</code> for false, <code class="language-plaintext highlighter-rouge">1</code> for true.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">turretplates</code></dt>
+  <dd>Number of turret plates<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup> a team gets.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">golddiffat15</code></dt>
+  <dd>The difference of total gold<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup> between a team and the opposing team at 15 mintutes.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">csdiffat15</code></dt>
+  <dd>The difference of total cs<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">5</a></sup> between a team and the opposing team at 15 mintutes.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">xpdiffat15</code></dt>
+  <dd>The difference of total xp<sup id="fnref:6" role="doc-noteref"><a href="#fn:6" class="footnote" rel="footnote">6</a></sup> between a team and the opposing team at 15 mintutes.</dd>
+  <dt><code class="language-plaintext highlighter-rouge">killsat15</code></dt>
+  <dd>The total number of kills a team has at 15 minutes.</dd>
+</dl>
+
+<hr />
+
+<h2 id="data-cleaning-and-exploratory-data-analysis">Data Cleaning and Exploratory Data Analysis</h2>
+<h3 id="data-cleaning">Data Cleaning</h3>
+<p>For this project, I will only be looking entries that are fully complete and the rows of team data.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># number of incomplete rows
+</span><span class="n">league</span><span class="p">[</span><span class="n">league</span><span class="p">[</span><span class="s">'datacompleteness'</span><span class="p">]</span> <span class="o">!=</span> <span class="s">'complete'</span><span class="p">].</span><span class="n">shape</span> 
+<span class="p">(</span><span class="mi">16692</span><span class="p">,</span> <span class="mi">161</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Some of the rows in the dataset are not fully complete.</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># number of team rows
+</span><span class="n">league</span><span class="p">[</span><span class="n">league</span><span class="p">[</span><span class="s">'position'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'team'</span><span class="p">].</span><span class="n">shape</span> 
+<span class="p">(</span><span class="mi">19608</span><span class="p">,</span> <span class="mi">161</span><span class="p">)</span>
+</code></pre></div></div>
+<p>I only want to use the rows with team data.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># filter out incomplete and non-team data
+</span><span class="n">league_clean</span> <span class="o">=</span> <span class="n">league</span><span class="p">[(</span><span class="n">league</span><span class="p">[</span><span class="s">'datacompleteness'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'complete'</span><span class="p">)</span> 
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">league</span><span class="p">[</span><span class="s">'position'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'team'</span><span class="p">)]</span>
+</code></pre></div></div>
+<p>Now we only have rows that are complete and are team data. But some are columns are <code class="language-plaintext highlighter-rouge">0</code>s and <code class="language-plaintext highlighter-rouge">1</code>s so I will change them into bools for easier reading and analysis.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">'firstblood'</span><span class="p">,</span>
+    <span class="s">'firstdragon'</span><span class="p">,</span>
+    <span class="s">'firstherald'</span><span class="p">,</span>
+    <span class="s">'firstbaron'</span><span class="p">,</span>
+    <span class="s">'firsttower'</span><span class="p">,</span>
+    <span class="s">'firstmidtower'</span><span class="p">,</span>
+    <span class="s">'firsttothreetowers'</span><span class="p">]</span>
+<span class="n">league_clean</span><span class="p">[</span><span class="n">bool_cols</span><span class="p">]</span> <span class="o">=</span> <span class="n">league_clean</span><span class="p">[</span><span class="n">bool_cols</span><span class="p">].</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+
+<span class="n">league_clean</span><span class="p">[</span><span class="s">'result'</span><span class="p">]</span> <span class="o">=</span> <span class="n">league_clean</span><span class="p">[</span><span class="s">'result'</span><span class="p">].</span><span class="nb">map</span><span class="p">(</span>
+    <span class="p">{</span><span class="mf">1.0</span><span class="p">:</span> <span class="s">'win'</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="s">'loss'</span><span class="p">})</span>
+</code></pre></div></div>
+<p>The only columns I will be looking at are the ones mentioned above.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">league_clean</span> <span class="o">=</span> <span class="n">league_clean</span><span class="p">[[</span>
+    <span class="s">'result'</span><span class="p">,</span>
+    <span class="s">'side'</span><span class="p">,</span>
+    <span class="s">'firstblood'</span><span class="p">,</span>
+    <span class="s">'firstdragon'</span><span class="p">,</span>
+    <span class="s">'firsttower'</span><span class="p">,</span>
+    <span class="s">'turretplates'</span><span class="p">,</span>
+    <span class="s">'golddiffat15'</span><span class="p">,</span>
+    <span class="s">'csdiffat15'</span><span class="p">,</span>
+    <span class="s">'xpdiffat15'</span><span class="p">,</span>
+    <span class="s">'killsat15'</span><span class="p">]]</span>
+</code></pre></div></div>
+
+<p>Here’s the final cleaned dataframe:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">league_clean</span><span class="p">.</span><span class="n">head</span><span class="p">().</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">result</th>
+      <th style="text-align: left">side</th>
+      <th style="text-align: left">firstblood</th>
+      <th style="text-align: left">firstdragon</th>
+      <th style="text-align: left">firsttower</th>
+      <th style="text-align: right">turretplates</th>
+      <th style="text-align: right">golddiffat15</th>
+      <th style="text-align: right">csdiffat15</th>
+      <th style="text-align: right">xpdiffat15</th>
+      <th style="text-align: right">killsat15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">win</td>
+      <td style="text-align: left">Blue</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">2293</td>
+      <td style="text-align: right">23</td>
+      <td style="text-align: right">949</td>
+      <td style="text-align: right">6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">loss</td>
+      <td style="text-align: left">Red</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: right">5</td>
+      <td style="text-align: right">-2293</td>
+      <td style="text-align: right">-23</td>
+      <td style="text-align: right">-949</td>
+      <td style="text-align: right">3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">win</td>
+      <td style="text-align: left">Blue</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">-75</td>
+      <td style="text-align: right">12</td>
+      <td style="text-align: right">1092</td>
+      <td style="text-align: right">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">loss</td>
+      <td style="text-align: left">Red</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: right">8</td>
+      <td style="text-align: right">75</td>
+      <td style="text-align: right">-12</td>
+      <td style="text-align: right">-1092</td>
+      <td style="text-align: right">6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">win</td>
+      <td style="text-align: left">Blue</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: left">True</td>
+      <td style="text-align: left">False</td>
+      <td style="text-align: right">1</td>
+      <td style="text-align: right">-561</td>
+      <td style="text-align: right">-36</td>
+      <td style="text-align: right">410</td>
+      <td style="text-align: right">4</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="univariate-analysis">Univariate Analysis</h3>
+
+<iframe src="assets/univariate_kills.html" width="800" height="416" frameborder="0"></iframe>
+<p>This histogram shows the distribution of kills at 15 minutes. There seem to be two peaks at 0 and 3, indicating that these are the most common, suggesting that there is not too much action in the early game. Not very many teams achieve 10+ kills in 15 minutes. Maybe the more kills at 15 minutes, the higher the chance of winning the game?</p>
+
+<iframe src="assets/univariate_turretplates.html" width="800" height="416" frameborder="0"></iframe>
+<p>This histogram shows the distribution of how many turret plates a team destroys. The only peak is at <code class="language-plaintext highlighter-rouge">3</code>. There might be a correlation between the number of turret plates a team gets and their success later in the game?</p>
+
+<h3 id="bivariate-analysis">Bivariate Analysis</h3>
+
+<iframe src="assets/bivariate_killsat15.html" width="800" height="416" frameborder="0"></iframe>
+
+<p>This box plot shows the relationship between the number of kills at 15 minutes and the game’s result. There is little separation between the two, with the median only being different by <code class="language-plaintext highlighter-rouge">1</code>. The first quartiles are also separated by <code class="language-plaintext highlighter-rouge">1</code>, while the third quartile has a difference of <code class="language-plaintext highlighter-rouge">2</code>.</p>
+
+<iframe src="assets/bivariate_turretplates.html" width="800" height="416" frameborder="0"></iframe>
+
+<p>This box plot shows the relationship between number of turret plates and result. There is some difference between the two. For teams who won, the median is <code class="language-plaintext highlighter-rouge">5</code> while for teams that lost, the median is <code class="language-plaintext highlighter-rouge">3</code>. The first and third quartiles are also greater for teams who won than teams who lost.</p>
+
+<iframe src="assets/bivariate_golddiffat15.html" width="800" height="416" frameborder="0"></iframe>
+
+<p>This box plot shows the relationship between gold differential and result. The median for winning teams is <code class="language-plaintext highlighter-rouge">+1377</code> and is <code class="language-plaintext highlighter-rouge">-1377</code> for losing teams. This is becasue the distribution is symmetrical. There is a clearer divide here than for kills at 15 or turret plates. This suggests that the higher the gold difference at at 15 minutes, the more likely that team is going to win.</p>
+
+<h3 id="interesting-aggregates">Interesting Aggregates</h3>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">league_clean</span>
+ <span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'firstblood'</span><span class="p">,</span><span class="s">'firsttower'</span><span class="p">])</span>
+ <span class="p">[</span><span class="s">'result'</span><span class="p">]</span>
+ <span class="p">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+ <span class="p">.</span><span class="n">unstack</span><span class="p">())</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">[firstblood] [firsttower]</th>
+      <th style="text-align: right">loss</th>
+      <th style="text-align: right">win</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">(False, False)</td>
+      <td style="text-align: right">0.736003</td>
+      <td style="text-align: right">0.263997</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">(False, True)</td>
+      <td style="text-align: right">0.396645</td>
+      <td style="text-align: right">0.603355</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">(True, False)</td>
+      <td style="text-align: right">0.603355</td>
+      <td style="text-align: right">0.396645</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">(True, True)</td>
+      <td style="text-align: right">0.263997</td>
+      <td style="text-align: right">0.736003</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>When grouped by <code class="language-plaintext highlighter-rouge">firstblood</code> and <code class="language-plaintext highlighter-rouge">firsttower</code>, I found that when both are true, <code class="language-plaintext highlighter-rouge">73.6%</code> of the teams won the game. When a team secured the first blood, but not the first tower, the proportion drops down to <code class="language-plaintext highlighter-rouge">39.7%</code>. If a team gets the first tower but not the first kill, they win <code class="language-plaintext highlighter-rouge">60.3%</code> of the time. And when a team does not get the first blood or first tower, only <code class="language-plaintext highlighter-rouge">26.4%</code> of teams end up winning.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">league_clean</span><span class="p">.</span><span class="n">pivot_table</span><span class="p">(</span>
+    <span class="n">index</span><span class="o">=</span><span class="s">'firstblood'</span><span class="p">,</span>
+    <span class="n">columns</span><span class="o">=</span><span class="s">'firsttower'</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="s">'golddiffat15'</span><span class="p">,</span>
+    <span class="n">aggfunc</span><span class="o">=</span><span class="s">'mean'</span> 
+<span class="p">)</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">firsttower</th>
+      <th style="text-align: right">False</th>
+      <th style="text-align: right">True</th>
+    </tr>
+    <tr>
+      <th style="text-align: left">firstblood</th>
+      <th style="text-align: right"> </th>
+      <th style="text-align: right"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">False</td>
+      <td style="text-align: right">-2411.18</td>
+      <td style="text-align: right">785.68</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">True</td>
+      <td style="text-align: right">-785.68</td>
+      <td style="text-align: right">2411.18</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Looking at <code class="language-plaintext highlighter-rouge">firstblood</code> and <code class="language-plaintext highlighter-rouge">firsttower</code> again, I created a pivot table showing the gold difference at 15. When a team get the first blood and first tower, they have a gold lead of <code class="language-plaintext highlighter-rouge">2411.18</code>. When a team gets the first blood but not the first tower, they fall behind the other team, with a gold difference of <code class="language-plaintext highlighter-rouge">-785.68</code>. A team that gets the first tower but not the first blood, the average gold difference is <code class="language-plaintext highlighter-rouge">785.68</code>. A team that does not get the first blood or the first tower ends up in a huge deficit by 15 minutes, with a gold difference of <code class="language-plaintext highlighter-rouge">-2411.18</code>.</p>
+
+<p>Looking at these tables, it seems like destroying the first tower heavily impacts how much gold your team has at 15 minutes and your chances at winning.</p>
+
+<h3 id="imputation">Imputation</h3>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">league_clean</span><span class="p">.</span><span class="n">isna</span><span class="p">().</span><span class="nb">sum</span><span class="p">()</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: right">count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">result</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">side</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">firstblood</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">firstdragon</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">firsttower</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">turretplates</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">golddiffat15</td>
+      <td style="text-align: right">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">csdiffat15</td>
+      <td style="text-align: right">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">xpdiffat15</td>
+      <td style="text-align: right">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">killsat15</td>
+      <td style="text-align: right">4</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Only 2 games (4 teams) went on for less than 15 minutes, since they did not have statistics for <code class="language-plaintext highlighter-rouge">golddiffat15</code>, <code class="language-plaintext highlighter-rouge">csdiffat15</code>, <code class="language-plaintext highlighter-rouge">xpdiffat15</code>, <code class="language-plaintext highlighter-rouge">killsat15</code>. It does not make sense to look at these games so I will not do any imputation and just drop these rows.</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">league_clean</span> <span class="o">=</span> <span class="n">league_clean</span><span class="p">.</span><span class="n">dropna</span><span class="p">()</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="framing-a-prediction-problem">Framing a Prediction Problem</h2>
+
+<p>The variable I am trying to predict is the <code class="language-plaintext highlighter-rouge">result</code> column, which takes on only 2 values: <code class="language-plaintext highlighter-rouge">win</code> or <code class="language-plaintext highlighter-rouge">loss</code>. This means that this is a binary classification prediction problem. I chose the <code class="language-plaintext highlighter-rouge">result</code> column as the response variable because winning is the objective of the game.</p>
+
+<p>I am trying to predict if a team will win or lose a game after the initial early game phase. Thus, I will only be using statistics from 15 minutes to find an asnwer to my problem. The model I will be using is a logistic regression model. Since I am trying to determine if the game should be forfited, a game prediceted to be a loss, but was actually a win would be very bad. Therefore, I will be evaluating model performance with recall. Models will be trained and tested using a 75%/25% train test split.</p>
+
+<h2 id="baseline-model">Baseline Model</h2>
+
+<p>The baseline model was a logistic regression model that was trained on 2 columns: <code class="language-plaintext highlighter-rouge">turretplates</code> and <code class="language-plaintext highlighter-rouge">killsat15</code>. These features were all quantatative, so no feature engineering took place.</p>
+
+<p>After fitting the model, it achieved a training recall score of <code class="language-plaintext highlighter-rouge">0.6014</code> and a training accuracy of <code class="language-plaintext highlighter-rouge">0.6402</code>. The testing recall was <code class="language-plaintext highlighter-rouge">0.5915</code> and testing accuracy was <code class="language-plaintext highlighter-rouge">0.6388</code>.</p>
+
+<p>This performance is a good starting point, but can be improved upon. Previous analysis of <code class="language-plaintext highlighter-rouge">killsat15</code> and <code class="language-plaintext highlighter-rouge">turretplates</code> indicated that the difference between different <code class="language-plaintext highlighter-rouge">result</code>s could be hard to tell and could possibly explain the suboptimal performance. There is definately room for improvement.</p>
+
+<h2 id="final-model">Final Model</h2>
+
+<p>The final model was a logistic regresson model that was trained on the rest of the features, adding <code class="language-plaintext highlighter-rouge">side</code>, <code class="language-plaintext highlighter-rouge">firstblood</code>, <code class="language-plaintext highlighter-rouge">firstdragon</code>, <code class="language-plaintext highlighter-rouge">firsttower</code>, <code class="language-plaintext highlighter-rouge">golddiffat15</code>, <code class="language-plaintext highlighter-rouge">csdiffat15</code>, and <code class="language-plaintext highlighter-rouge">xpdiffat15</code>.</p>
+
+<p>The columns, <code class="language-plaintext highlighter-rouge">side</code>, <code class="language-plaintext highlighter-rouge">firstblood</code>, <code class="language-plaintext highlighter-rouge">firstdragon</code>, <code class="language-plaintext highlighter-rouge">firsttower</code> are categorical variables, all of which were one hot encoded by <code class="language-plaintext highlighter-rouge">OneHotEncoder</code>.</p>
+
+<p>The rest of the columns, <code class="language-plaintext highlighter-rouge">turretplates</code>, <code class="language-plaintext highlighter-rouge">golddiffat15</code>, <code class="language-plaintext highlighter-rouge">csdiffat15</code>, <code class="language-plaintext highlighter-rouge">xpdiffat15</code>, and <code class="language-plaintext highlighter-rouge">killsat15</code> are all numeric variables which were all standardized using <code class="language-plaintext highlighter-rouge">StandardScaler</code>.</p>
+
+<p>Hyperparameter tuning was conducted using <code class="language-plaintext highlighter-rouge">GridSearchCV</code> to identify the best <code class="language-plaintext highlighter-rouge">C</code>, <code class="language-plaintext highlighter-rouge">penalty</code>, <code class="language-plaintext highlighter-rouge">tol</code>, and <code class="language-plaintext highlighter-rouge">max_iter</code> to further improve model performance. The best hyperparameters selected were <code class="language-plaintext highlighter-rouge">C = 0.01</code>, <code class="language-plaintext highlighter-rouge">max_iter = 500</code>, <code class="language-plaintext highlighter-rouge">penalty = l1</code>, and <code class="language-plaintext highlighter-rouge">tol = 0.001</code>.</p>
+
+<p>With these changes, the final model had a training recall of <code class="language-plaintext highlighter-rouge">0.7462</code>, a training accuracy of <code class="language-plaintext highlighter-rouge">0.7326</code>, a testing recall of <code class="language-plaintext highlighter-rouge">0.7563</code>, and a testing accuracy of <code class="language-plaintext highlighter-rouge">0.7406</code>, demonstrating a clear improvement upon the baseline model.</p>
+
+<iframe src="assets/train_test_acc_recall.html" width="800" height="416" frameborder="0"></iframe>
+
+<p>As seen in this graph, the final model has significant improvements in recall and accuracy over the baseline model.</p>
+
+<hr />
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="https://www.leagueoflegends.com/en-us/how-to-play/">League of Legends</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p>Earliest you can surrender is at 15 minutes. <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p>During the first 14 minutes of the game, each turret has 5 “plates” that divide its heath that give damage reduction to the turret. Destroying these plates grants extra gold to the player who destroyed it. <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p>Gold is gained from killing minions, enemies, turrets, wards, jungle monsters, etc. Used to buy items from the shop. <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p>Creep score; The number of minions and monsters a champion has killed in the game. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:6" role="doc-endnote">
+      <p>Gained when a champion is near enemy minions when they die or from kills. Xp allows players to level up their abilities to have stronger effects. <a href="#fnref:6" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+
+      <footer class="site-footer">
+        
+          <span class="site-footer-owner"><a href="https://github.com/xuz24/league-of-legends-analysis">league-of-legends-analysis</a> is maintained by <a href="https://github.com/xuz24">xuz24</a>.</span>
+        
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a>.</span>
+      </footer>
+    </main>
+  </body>
+</html>
